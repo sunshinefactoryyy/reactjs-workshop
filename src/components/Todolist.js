@@ -1,9 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TodoForm from './TodoForm';
 import Todo from './Todo';
 
 function TodoList() {
   const [todos, setTodos] = useState([]);
+
+  const LOCAL_STORAGE_KEY = 'todoapp.todo'
+
+  useEffect(() => {
+    const storedTodos = JSON.parse(localStorage.getItem
+    (LOCAL_STORAGE_KEY))
+    if (storedTodos) setTodos(storedTodos)
+  }, [])
+
+  useEffect(() => {
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(todos))
+  }, [todos])
 
   const addTodo = todo => {
     if (!todo.text || /^\s*$/.test(todo.text)) {
@@ -40,16 +52,25 @@ function TodoList() {
     setTodos(updatedTodos);
   };
 
+  function clearTodo() {
+    const newTodos = todos.filter(todo => !todo.isComplete)
+    setTodos(newTodos);
+  }
+
   return (
     <>
       <h1>What's the Plan for Today?</h1>
       <TodoForm onSubmit={addTodo} />
+      <div className="todos-left">
+        {todos.filter(todo => !todo.isComplete).length} left to do
+      </div>
       <Todo
         todos={todos}
         completeTodo={completeTodo}
         removeTodo={removeTodo}
         updateTodo={updateTodo}
       />
+      <button className='todo-button clear' onClick={clearTodo}>Clear Complete</button>
     </>
   );
 }
