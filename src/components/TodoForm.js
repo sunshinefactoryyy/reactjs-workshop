@@ -28,7 +28,7 @@ function TodoForm(props) {
       {props.edit ? (
         <>
           <input
-            placeholder='Update your item'
+            placeholder='Update your todo'
             value={input}
             onChange={handleChange}
             name='text'
